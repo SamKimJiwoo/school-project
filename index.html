@@ -2,18 +2,20 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#FBFBFA">
   <title>업스쿨 (UPSCHOOL)</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <style>
     :root {
-      --bg-main: #FAF8F5;        /* 오프화이트 배경 */
-      --bg-card: #FFFFFF;        /* 순백색 카드 */
-      --wood-dark: #5C4033;      /* 월넛 우드 */
-      --wood-primary: #A67B5B;   /* 오크 우드 */
-      --wood-light: #EDE4D8;     /* 자작나무 톤 */
-      --text-main: #2D2926;      /* 다크 브라운 텍스트 */
-      --text-muted: #847B73;     /* 보조 텍스트 */
+      --bg-main: #FBFBFA;        
+      --bg-card: #FFFFFF;        
+      --wood-dark: #37352F;      
+      --wood-primary: #9B6B43;   
+      --wood-light: #F1ECE6;     
+      --wood-border: #E8E2D8;    
+      --text-main: #37352F;      
+      --text-muted: #9B9A97;     
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,7 +24,7 @@
       background-color: var(--bg-main);
       color: var(--text-main);
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-      padding: 32px 20px;
+      padding: 40px 20px;
       line-height: 1.6;
     }
 
@@ -35,36 +37,74 @@
       align-items: center;
       padding-bottom: 20px;
       margin-bottom: 24px;
-      border-bottom: 2px solid var(--wood-light);
+      border-bottom: 1px solid var(--wood-border);
     }
 
     .logo-area { display: flex; align-items: baseline; gap: 10px; }
     .logo-dot {
-      width: 10px; height: 10px;
+      width: 8px; height: 8px;
       background-color: var(--wood-primary);
       border-radius: 50%;
       align-self: center;
     }
-    h1 { font-size: 1.75rem; font-weight: 800; color: var(--wood-dark); letter-spacing: 0.04em; }
-    .logo-sub { font-size: 0.95rem; font-weight: 600; color: var(--wood-primary); }
+    h1 { font-size: 1.6rem; font-weight: 700; color: var(--wood-dark); letter-spacing: 0.05em; }
+    .logo-sub { font-size: 0.9rem; font-weight: 500; color: var(--wood-primary); }
 
-    .date-badge {
+    .datetime-badge {
       background-color: var(--wood-light);
       color: var(--wood-dark);
       padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border: 1px solid var(--wood-border);
     }
 
-    /* 학교 검색 & 설정 컨트롤 바 */
+    /* 날짜 이동 바 (어제, 오늘, 내일) */
+    .date-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--wood-border);
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(55, 53, 47, 0.03);
+    }
+
+    .date-nav-btn {
+      background-color: var(--wood-light);
+      color: var(--wood-dark);
+      border: 1px solid var(--wood-border);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .date-nav-btn:hover {
+      background-color: var(--wood-primary);
+      color: #FFF;
+      border-color: var(--wood-primary);
+    }
+
+    #current-view-date {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--wood-dark);
+    }
+
+    /* 학교 검색 & 설정 컨트롤 패널 */
     .control-panel {
       background: var(--bg-card);
-      border: 1px solid #EAE2D6;
-      border-radius: 16px;
+      border: 1px solid var(--wood-border);
+      border-radius: 10px;
       padding: 20px;
       margin-bottom: 28px;
-      box-shadow: 0 6px 20px rgba(92, 64, 51, 0.03);
+      box-shadow: 0 1px 3px rgba(55, 53, 47, 0.04);
     }
 
     .search-row {
@@ -75,40 +115,40 @@
 
     select, input, button {
       font-family: inherit;
-      font-size: 0.95rem;
-      border-radius: 10px;
-      border: 1px solid #DCD2C4;
-      padding: 10px 14px;
+      font-size: 0.92rem;
+      border-radius: 6px;
+      border: 1px solid var(--wood-border);
+      padding: 9px 12px;
       outline: none;
       transition: all 0.2s;
     }
 
     select, input {
-      background-color: var(--bg-main);
+      background-color: #FAFAF8;
       color: var(--text-main);
     }
 
     select:focus, input:focus {
       border-color: var(--wood-primary);
       background-color: #FFFFFF;
+      box-shadow: 0 0 0 2px rgba(155, 107, 67, 0.1);
     }
 
-    #region-select { min-width: 140px; }
+    #region-select { min-width: 130px; }
     #school-input { flex: 1; min-width: 180px; }
-    .class-input { width: 85px; text-align: center; }
+    .class-input { width: 75px; text-align: center; }
 
     .btn-primary {
       background-color: var(--wood-dark);
       color: #FFFFFF;
       border: none;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      padding: 10px 20px;
+      padding: 9px 16px;
     }
 
-    .btn-primary:hover { background-color: #463026; }
+    .btn-primary:hover { background-color: var(--wood-primary); }
 
-    /* 검색 결과 드롭다운 리스트 */
     #search-results {
       margin-top: 12px;
       border-top: 1px solid var(--wood-light);
@@ -117,32 +157,32 @@
     }
 
     .result-item {
-      padding: 10px 12px;
-      border-radius: 8px;
+      padding: 8px 10px;
+      border-radius: 6px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
-    .result-item:hover { background-color: var(--bg-main); }
-    .result-addr { color: var(--text-muted); font-size: 0.82rem; }
+    .result-item:hover { background-color: var(--wood-light); }
+    .result-addr { color: var(--text-muted); font-size: 0.8rem; }
 
     .selected-school-bar {
       margin-top: 14px;
       padding-top: 14px;
-      border-top: 1px dashed var(--wood-light);
+      border-top: 1px dashed var(--wood-border);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
     }
 
     .school-title-badge {
-      font-weight: 700;
+      font-weight: 600;
       color: var(--wood-dark);
       display: flex;
       align-items: center;
@@ -150,81 +190,100 @@
     }
 
     .kind-tag {
-      background-color: var(--wood-primary);
-      color: #fff;
+      background-color: var(--wood-light);
+      color: var(--wood-primary);
+      border: 1px solid var(--wood-border);
       font-size: 0.75rem;
       padding: 2px 8px;
-      border-radius: 6px;
+      border-radius: 4px;
+      font-weight: 500;
     }
 
-    .class-controls { display: flex; align-items: center; gap: 8px; }
+    .class-controls { display: flex; align-items: center; gap: 6px; }
 
-    /* 메인 카드 그리드 */
+    /* 메인 그리드 */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
+      gap: 20px;
     }
 
     .card {
       background: var(--bg-card);
-      border-radius: 16px;
-      padding: 28px;
-      border: 1px solid #EAE2D6;
-      box-shadow: 0 8px 24px rgba(92, 64, 51, 0.04);
+      border-radius: 10px;
+      padding: 24px;
+      border: 1px solid var(--wood-border);
+      box-shadow: 0 1px 3px rgba(55, 53, 47, 0.03);
     }
 
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
       border-bottom: 1px solid var(--wood-light);
     }
 
-    .card h2 { font-size: 1.15rem; font-weight: 700; color: var(--wood-dark); }
-    .card-tag { font-size: 0.75rem; color: var(--wood-primary); font-weight: 600; letter-spacing: 0.05em; }
+    .card h2 { font-size: 1.05rem; font-weight: 600; color: var(--wood-dark); }
+    .card-tag { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.08em; }
 
     ul { list-style: none; }
     li {
-      padding: 8px 0;
-      font-size: 1.02rem;
-      border-bottom: 1px dashed #F0EAE1;
+      padding: 7px 0;
+      font-size: 0.98rem;
+      border-bottom: 1px solid #F5F3F0;
       display: flex;
+      justify-content: space-between;
       align-items: center;
     }
     li:last-child { border-bottom: none; }
 
-    #meal-list li::before {
+    .menu-name {
+      display: flex;
+      align-items: center;
+    }
+    .menu-name::before {
       content: "";
       display: inline-block;
-      width: 6px; height: 6px;
+      width: 5px; height: 5px;
       background-color: var(--wood-primary);
       border-radius: 50%;
-      margin-right: 12px;
+      margin-right: 10px;
+    }
+
+    /* 알레르기 태그 스타일 */
+    .allergy-tag {
+      font-size: 0.75rem;
+      color: #C07158;
+      background-color: #FAF2EE;
+      border: 1px solid #F2DCD4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+      white-space: nowrap;
     }
 
     .period-num {
       display: inline-block;
-      background-color: var(--bg-main);
+      background-color: var(--wood-light);
       color: var(--wood-dark);
-      border: 1px solid var(--wood-light);
-      font-weight: 700;
-      font-size: 0.85rem;
-      padding: 2px 10px;
-      border-radius: 8px;
-      margin-right: 12px;
-      min-width: 54px;
+      border: 1px solid var(--wood-border);
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 10px;
+      min-width: 50px;
       text-align: center;
     }
 
-    .empty-msg { color: var(--text-muted); font-size: 0.95rem; }
+    .empty-msg { color: var(--text-muted); font-size: 0.92rem; justify-content: flex-start; }
 
     footer {
       margin-top: 40px;
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
     }
   </style>
@@ -237,10 +296,18 @@
         <h1>UPSCHOOL</h1>
         <span class="logo-sub">업스쿨</span>
       </div>
-      <span class="date-badge" id="today-date">불러오는 중...</span>
+      <!-- 실시간 시계 -->
+      <div class="datetime-badge" id="live-clock">로딩 중...</div>
     </header>
 
-    <!-- 지역 선택 및 학교 검색 패널 -->
+    <!-- 날짜 이동 네비게이션 바 -->
+    <div class="date-nav-bar">
+      <button class="date-nav-btn" onclick="changeDate(-1)">◀ 어제</button>
+      <span id="current-view-date">오늘 날짜 로딩 중...</span>
+      <button class="date-nav-btn" onclick="changeDate(1)">내일 ▶</button>
+    </div>
+
+    <!-- 학교 검색 패널 -->
     <section class="control-panel">
       <div class="search-row">
         <select id="region-select" title="지역(교육청) 선택">
@@ -264,14 +331,12 @@
           <option value="T10">제주특별자치도</option>
         </select>
 
-        <input type="text" id="school-input" placeholder="학교 이름을 입력하세요 (예: 운양중학교)" />
+        <input type="text" id="school-input" placeholder="학교 이름을 입력하세요 (예: OO중학교)" />
         <button class="btn-primary" onclick="searchSchool()">학교 검색</button>
       </div>
 
-      <!-- 검색 결과 목록 -->
       <div id="search-results"></div>
 
-      <!-- 현재 선택된 학교 & 학년/반 설정 -->
       <div class="selected-school-bar">
         <div class="school-title-badge">
           <span class="kind-tag" id="school-kind">학교 미선택</span>
@@ -281,7 +346,7 @@
         <div class="class-controls">
           <input type="number" id="grade-input" class="class-input" min="1" max="6" value="2" title="학년" /> <span>학년</span>
           <input type="number" id="class-input" class="class-input" min="1" max="20" value="1" title="반" /> <span>반</span>
-          <button class="btn-primary" onclick="applyClassAndLoad()" style="padding: 8px 14px; font-size: 0.88rem;">조회</button>
+          <button class="btn-primary" onclick="applyClassAndLoad()" style="padding: 7px 12px; font-size: 0.85rem;">조회</button>
         </div>
       </div>
     </section>
@@ -310,39 +375,79 @@
     </div>
 
     <footer>
-      업스쿨 (UPSCHOOL) — Smart School Portal
+      업스쿨 (UPSCHOOL)
     </footer>
   </div>
 
   <script>
-    // ==========================================
-    // 발급받은 나이스 API 인증키를 아래에 입력하세요
-    // ==========================================
     const API_KEY = "f509b4f4a72d4e798e96fe1b588fa50b";
 
-    // 현재 선택된 학교 상태 저장 객체
     let selectedSchool = {
       eduCode: "",
       schoolCode: "",
       schoolName: "",
-      schoolKind: "" // 초등학교, 중학교, 고등학교
+      schoolKind: ""
     };
 
-    // 오늘 날짜 세팅 (YYYYMMDD)
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const YMD = `${year}${month}${day}`;
-    const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-    document.getElementById('today-date').innerText = `${year}. ${month}. ${day} (${weekDays[today.getDay()]})`;
+    // 현재 조회 중인 날짜 객체 (기본값: 오늘)
+    let viewingDate = new Date();
 
-    // 엔터키로 학교 검색 지원
+    // 알레르기 번호 매핑 사전
+    const allergyMap = {
+      "1": "난류", "2": "우유", "3": "메밀", "4": "땅콩", "5": "대두",
+      "6": "밀", "7": "고등어", "8": "게", "9": "새우", "10": "돼지고기",
+      "11": "복숭아", "12": "토마토", "13": "아황산류", "14": "호두",
+      "15": "닭고기", "16": "쇠고기", "17": "오징어", "18": "조개류"
+    };
+
+    // 실시간 시계 (상단 우측)
+    function updateLiveClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('live-clock').innerText = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    // 날짜 네비게이션바 갱신 및 데이터 로드
+    function updateDateView() {
+      const year = viewingDate.getFullYear();
+      const month = String(viewingDate.getMonth() + 1).padStart(2, '0');
+      const day = String(viewingDate.getDate()).padStart(2, '0');
+      const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+      const dayName = weekDays[viewingDate.getDay()];
+
+      document.getElementById('current-view-date').innerText = `${year}.${month}.${day} (${dayName})`;
+
+      if (selectedSchool.schoolCode) {
+        fetchMeal();
+        const grade = document.getElementById('grade-input').value;
+        const classNm = document.getElementById('class-input').value;
+        fetchTimetable(grade, classNm);
+      }
+    }
+
+    // 어제(-1) / 내일(+1) 이동 버튼 핸들러
+    function changeDate(days) {
+      viewingDate.setDate(viewingDate.getDate() + days);
+      updateDateView();
+    }
+
+    // YYYYMMDD 문자열 생성 헬퍼
+    function getFormattedYMD(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}${m}${d}`;
+    }
+
     document.getElementById('school-input').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') searchSchool();
     });
 
-    // 1. 학교 검색 함수 (schoolInfo API)
+    // 1. 학교 검색
     async function searchSchool() {
       const region = document.getElementById('region-select').value;
       const keyword = document.getElementById('school-input').value.trim();
@@ -354,7 +459,7 @@
       }
 
       resultsBox.style.display = "block";
-      resultsBox.innerHTML = `<div class="empty-msg" style="padding: 8px;">학교를 검색하는 중...</div>`;
+      resultsBox.innerHTML = `<div class="empty-msg" style="padding: 6px;">학교를 검색하는 중...</div>`;
 
       let url = `https://open.neis.go.kr/hub/schoolInfo?KEY=${API_KEY}&Type=json&SCHUL_NM=${encodeURIComponent(keyword)}`;
       if (region) url += `&ATPT_OFCDC_SC_CODE=${region}`;
@@ -369,20 +474,19 @@
             <div class="result-item" onclick="selectSchool('${s.ATPT_OFCDC_SC_CODE}', '${s.SD_SCHUL_CODE}', '${s.SCHUL_NM}', '${s.SCHUL_KND_SC_NM}')">
               <div>
                 <strong>${s.SCHUL_NM}</strong>
-                <span class="result-addr">(${s.ORG_RDNMA || s.ATPT_OFCDC_SC_NM})</span>
+                <span class="result-addr">(${s.ORG_RDNMA || s.ATPT_OFCDC_SC_CODE})</span>
               </div>
-              <span style="color: var(--wood-primary); font-weight: 600; font-size: 0.85rem;">선택 ›</span>
+              <span style="color: var(--wood-primary); font-weight: 500; font-size: 0.85rem;">선택 ›</span>
             </div>
           `).join('');
         } else {
-          resultsBox.innerHTML = `<div class="empty-msg" style="padding: 8px;">검색 결과가 없습니다. 지역이나 학교명을 확인해주세요.</div>`;
+          resultsBox.innerHTML = `<div class="empty-msg" style="padding: 6px;">검색 결과가 없습니다.</div>`;
         }
       } catch (err) {
-        resultsBox.innerHTML = `<div class="empty-msg" style="padding: 8px;">검색 중 오류가 발생했습니다. 인증키를 확인해주세요.</div>`;
+        resultsBox.innerHTML = `<div class="empty-msg" style="padding: 6px;">검색 중 오류가 발생했습니다.</div>`;
       }
     }
 
-    // 2. 검색 목록에서 학교 클릭 시 선택 처리
     function selectSchool(eduCode, schoolCode, schoolName, schoolKind) {
       selectedSchool = { eduCode, schoolCode, schoolName, schoolKind };
       document.getElementById('search-results').style.display = "none";
@@ -403,7 +507,6 @@
       saveAndLoad();
     }
 
-    // 브라우저에 설정 저장 후 급식/시간표 호출
     function saveAndLoad() {
       const grade = document.getElementById('grade-input').value;
       const classNm = document.getElementById('class-input').value;
@@ -414,13 +517,13 @@
         classNm
       }));
 
-      fetchMeal();
-      fetchTimetable(grade, classNm);
+      updateDateView();
     }
 
-    // 3. 급식 조회
+    // 2. 급식 조회 + 알레르기 파싱
     async function fetchMeal() {
       const { eduCode, schoolCode } = selectedSchool;
+      const YMD = getFormattedYMD(viewingDate);
       const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=${API_KEY}&Type=json&ATPT_OFCDC_SC_CODE=${eduCode}&SD_SCHUL_CODE=${schoolCode}&MLSV_YMD=${YMD}`;
       const mealEl = document.getElementById('meal-list');
       mealEl.innerHTML = `<li class="empty-msg">급식을 불러오는 중...</li>`;
@@ -431,24 +534,50 @@
 
         if (data.mealServiceDietInfo) {
           const rawMenu = data.mealServiceDietInfo[1].row[0].DDISH_NM;
-          const cleanMenu = rawMenu.replace(/\([0-9.]+\)/g, '').split('<br/>');
-          mealEl.innerHTML = cleanMenu.map(item => `<li>${item.trim()}</li>`).join('');
+          
+          // <br/> 기준으로 메뉴별 분리 후 알레르기 번호 추출 및 정제
+          const menuLines = rawMenu.split('<br/>');
+          mealEl.innerHTML = menuLines.map(line => {
+            // 알레르기 번호 추출 (예: "현미밥(1.5.)" -> 메뉴명과 번호 분리)
+            const match = line.match(/^([^(]+)(?:\(([^)]+)\))?/);
+            if (!match) return `<li><span class="menu-name">${line}</span></li>`;
+
+            const menuName = match[1].trim();
+            const allergyNumsStr = match[2]; // "1.5." 등
+
+            let allergyBadgeHtml = "";
+            if (allergyNumsStr) {
+              // 점(.)으로 분리하여 숫자 추출
+              const nums = allergyNumsStr.replace(/\.$/, '').split('.');
+              const allergyNames = nums.map(n => allergyMap[n]).filter(Boolean);
+              if (allergyNames.length > 0) {
+                allergyBadgeHtml = `<span class="allergy-tag">${allergyNames.join(', ')}</span>`;
+              }
+            }
+
+            return `
+              <li>
+                <span class="menu-name">${menuName}</span>
+                ${allergyBadgeHtml}
+              </li>
+            `;
+          }).join('');
         } else {
-          mealEl.innerHTML = `<li class="empty-msg">오늘은 급식이 제공되지 않는 날입니다.</li>`;
+          mealEl.innerHTML = `<li class="empty-msg">해당 날짜에 급식 정보가 없습니다.</li>`;
         }
       } catch (err) {
         mealEl.innerHTML = `<li class="empty-msg">급식 정보를 불러오지 못했습니다.</li>`;
       }
     }
 
-    // 4. 학교급(초/중/고)에 맞춘 시간표 자동 조회
+    // 3. 시간표 조회
     async function fetchTimetable(grade, classNm) {
       const { eduCode, schoolCode, schoolKind } = selectedSchool;
+      const YMD = getFormattedYMD(viewingDate);
       const timeEl = document.getElementById('timetable-list');
       timeEl.innerHTML = `<li class="empty-msg">시간표를 불러오는 중...</li>`;
 
-      // 학교 종류에 따라 나이스 API 엔드포인트 자동 선택
-      let endpoint = "misTimetable"; // 기본: 중학교
+      let endpoint = "misTimetable";
       if (schoolKind.includes("초등")) endpoint = "elsTimetable";
       else if (schoolKind.includes("고등")) endpoint = "hisTimetable";
 
@@ -460,17 +589,19 @@
 
         if (data[endpoint]) {
           const rows = data[endpoint][1].row;
-          timeEl.innerHTML = rows.map(r => `<li><span class="period-num">${r.PERIO}교시</span> ${r.ITRT_CNTNT}</li>`).join('');
+          timeEl.innerHTML = rows.map(r => `<li><div><span class="period-num">${r.PERIO}교시</span> ${r.ITRT_CNTNT}</div></li>`).join('');
         } else {
-          timeEl.innerHTML = `<li class="empty-msg">등록된 시간표가 없습니다.</li>`;
+          timeEl.innerHTML = `<li class="empty-msg">해당 날짜에 등록된 시간표가 없습니다.</li>`;
         }
       } catch (err) {
         timeEl.innerHTML = `<li class="empty-msg">시간표를 불러오지 못했습니다.</li>`;
       }
     }
 
-    // 페이지 접속 시 이전에 저장한 학교 정보가 있으면 자동 불러오기
+    // 초기 실행 시 저장된 설정 불러오기
     window.addEventListener('DOMContentLoaded', () => {
+      updateDateView(); // 오늘 날짜 텍스트 세팅
+
       const saved = localStorage.getItem('upschool_config');
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -485,8 +616,7 @@
           document.getElementById('grade-input').value = parsed.grade || 2;
           document.getElementById('class-input').value = parsed.classNm || 1;
           updateSchoolUI();
-          fetchMeal();
-          fetchTimetable(parsed.grade || 2, parsed.classNm || 1);
+          updateDateView();
         }
       }
     });
