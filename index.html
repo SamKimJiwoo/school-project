@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>업스쿨 (UPSCHOOL)</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    :root {
+      --bg-main: #FAF8F5;        /* 오프화이트 배경 */
+      --bg-card: #FFFFFF;        /* 순백색 카드 */
+      --wood-dark: #5C4033;      /* 월넛 우드 */
+      --wood-primary: #A67B5B;   /* 오크 우드 */
+      --wood-light: #EDE4D8;     /* 자작나무 톤 */
+      --text-main: #2D2926;      /* 다크 브라운 텍스트 */
+      --text-muted: #847B73;     /* 보조 텍스트 */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 32px 20px;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; }
+
+    /* 상단 헤더 */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--wood-light);
+    }
+
+    .logo-area { display: flex; align-items: baseline; gap: 10px; }
+    .logo-dot {
+      width: 10px; height: 10px;
+      background-color: var(--wood-primary);
+      border-radius: 50%;
+      align-self: center;
+    }
+    h1 { font-size: 1.75rem; font-weight: 800; color: var(--wood-dark); letter-spacing: 0.04em; }
+    .logo-sub { font-size: 0.95rem; font-weight: 600; color: var(--wood-primary); }
+
+    .date-badge {
+      background-color: var(--wood-light);
+      color: var(--wood-dark);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* 학교 검색 & 설정 컨트롤 바 */
+    .control-panel {
+      background: var(--bg-card);
+      border: 1px solid #EAE2D6;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 20px rgba(92, 64, 51, 0.03);
+    }
+
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    select, input, button {
+      font-family: inherit;
+      font-size: 0.95rem;
+      border-radius: 10px;
+      border: 1px solid #DCD2C4;
+      padding: 10px 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    select, input {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+    }
+
+    select:focus, input:focus {
+      border-color: var(--wood-primary);
+      background-color: #FFFFFF;
+    }
+
+    #region-select { min-width: 140px; }
+    #school-input { flex: 1; min-width: 180px; }
+    .class-input { width: 85px; text-align: center; }
+
+    .btn-primary {
+      background-color: var(--wood-dark);
+      color: #FFFFFF;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 10px 20px;
+    }
+
+    .btn-primary:hover { background-color: #463026; }
+
+    /* 검색 결과 드롭다운 리스트 */
+    #search-results {
+      margin-top: 12px;
+      border-top: 1px solid var(--wood-light);
+      padding-top: 10px;
+      display: none;
+    }
+
+    .result-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.92rem;
+    }
+
+    .result-item:hover { background-color: var(--bg-main); }
+    .result-addr { color: var(--text-muted); font-size: 0.82rem; }
+
+    .selected-school-bar {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--wood-light);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+    }
+
+    .school-title-badge {
+      font-weight: 700;
+      color: var(--wood-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kind-tag {
+      background-color: var(--wood-primary);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .class-controls { display: flex; align-items: center; gap: 8px; }
+
+    /* 메인 카드 그리드 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid #EAE2D6;
+      box-shadow: 0 8px 24px rgba(92, 64, 51, 0.04);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--wood-light);
+    }
+
+    .card h2 { font-size: 1.15rem; font-weight: 700; color: var(--wood-dark); }
+    .card-tag { font-size: 0.75rem; color: var(--wood-primary); font-weight: 600; letter-spacing: 0.05em; }
+
+    ul { list-style: none; }
+    li {
+      padding: 8px 0;
+      font-size: 1.02rem;
+      border-bottom: 1px dashed #F0EAE1;
+      display: flex;
+      align-items: center;
+    }
+    li:last-child { border-bottom: none; }
+
+    #meal-list li::before {
+      content: "";
+      display: inline-block;
+      width: 6px; height: 6px;
+      background-color: var(--wood-primary);
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+
+    .period-num {
+      display: inline-block;
+      background-color: var(--bg-main);
+      color: var(--wood-dark);
+      border: 1px solid var(--wood-light);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 2px 10px;
+      border-radius: 8px;
+      margin-right: 12px;
+      min-width: 54px;
+      text-align: center;
+    }
+
+    .empty-msg { color: var(--text-muted); font-size: 0.95rem; }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-area">
+        <span class="logo-dot"></span>
+        <h1>UPSCHOOL</h1>
+        <span class="logo-sub">업스쿨</span>
+      </div>
+      <span class="date-badge" id="today-date">불러오는 중...</span>
+    </header>
+
+    <!-- 지역 선택 및 학교 검색 패널 -->
+    <section class="control-panel">
+      <div class="search-row">
+        <select id="region-select" title="지역(교육청) 선택">
+          <option value="">전체 지역</option>
+          <option value="B10">서울특별시</option>
+          <option value="C10">부산광역시</option>
+          <option value="D10">대구광역시</option>
+          <option value="E10">인천광역시</option>
+          <option value="F10">광주광역시</option>
+          <option value="G10">대전광역시</option>
+          <option value="H10">울산광역시</option>
+          <option value="I10">세종특별자치시</option>
+          <option value="J10" selected>경기도</option>
+          <option value="K10">강원특별자치도</option>
+          <option value="M10">충청북도</option>
+          <option value="N10">충청남도</option>
+          <option value="P10">전북특별자치도</option>
+          <option value="Q10">전라남도</option>
+          <option value="R10">경상북도</option>
+          <option value="S10">경상남도</option>
+          <option value="T10">제주특별자치도</option>
+        </select>
+
+        <input type="text" id="school-input" placeholder="학교 이름을 입력하세요 (예: 운양중학교)" />
+        <button class="btn-primary" onclick="searchSchool()">학교 검색</button>
+      </div>
+
+      <!-- 검색 결과 목록 -->
+      <div id="search-results"></div>
+
+      <!-- 현재 선택된 학교 & 학년/반 설정 -->
+      <div class="selected-school-bar">
+        <div class="school-title-badge">
+          <span class="kind-tag" id="school-kind">학교 미선택</span>
+          <span id="current-school-name">위에서 학교를 검색해 선택해주세요</span>
+        </div>
+
+        <div class="class-controls">
+          <input type="number" id="grade-input" class="class-input" min="1" max="6" value="2" title="학년" /> <span>학년</span>
+          <input type="number" id="class-input" class="class-input" min="1" max="20" value="1" title="반" /> <span>반</span>
+          <button class="btn-primary" onclick="applyClassAndLoad()" style="padding: 8px 14px; font-size: 0.88rem;">조회</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 급식 & 시간표 카드 -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <h2>오늘의 급식</h2>
+          <span class="card-tag">LUNCH</span>
+        </div>
+        <ul id="meal-list">
+          <li class="empty-msg">학교를 선택하면 급식이 표시됩니다.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>오늘의 시간표</h2>
+          <span class="card-tag">TIMETABLE</span>
+        </div>
+        <ul id="timetable-list">
+          <li class="empty-msg">학교와 학년/반을 선택하면 시간표가 표시됩니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer>
+      업스쿨 (UPSCHOOL) — Smart School Portal
+    </footer>
+  </div>
+
+  <script>
+    // ==========================================
+    // 발급받은 나이스 API 인증키를 아래에 입력하세요
+    // ==========================================
+    const API_KEY = "f509b4f4a72d4e798e96fe1b588fa50b";
+
+    // 현재 선택된 학교 상태 저장 객체
+    let selectedSchool = {
+      eduCode: "",
+      schoolCode: "",
+      schoolName: "",
+      schoolKind: "" // 초등학교, 중학교, 고등학교
+    };
+
+    // 오늘 날짜 세팅 (YYYYMMDD)
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const YMD = `${year}${month}${day}`;
+    const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+    document.getElementById('today-date').innerText = `${year}. ${month}. ${day} (${weekDays[today.getDay()]})`;
+
+    // 엔터키로 학교 검색 지원
+    document.getElementById('school-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchSchool();
+    });
+
+    // 1. 학교 검색 함수 (schoolInfo API)
+    async function searchSchool() {
+      const region = document.getElementById('region-select').value;
+      const keyword = document.getElementById('school-input').value.trim();
+      const resultsBox = document.getElementById('search-results');
+
+      if (!keyword) {
+        alert("검색할 학교 이름을 입력해주세요!");
+        return;
+      }
+
+      resultsBox.style.display = "block";
+      resultsBox.innerHTML = `<div class="empty-msg" style="padding: 8px;">학교를 검색하는 중...</div>`;
+
+      let url = `https://open.neis.go.kr/hub/schoolInfo?KEY=${API_KEY}&Type=json&SCHUL_NM=${encodeURIComponent(keyword)}`;
+      if (region) url += `&ATPT_OFCDC_SC_CODE=${region}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.schoolInfo) {
+          const schools = data.schoolInfo[1].row;
+          resultsBox.innerHTML = schools.map(s => `
+            <div class="result-item" onclick="selectSchool('${s.ATPT_OFCDC_SC_CODE}', '${s.SD_SCHUL_CODE}', '${s.SCHUL_NM}', '${s.SCHUL_KND_SC_NM}')">
+              <div>
+                <strong>${s.SCHUL_NM}</strong>
+                <span class="result-addr">(${s.ORG_RDNMA || s.ATPT_OFCDC_SC_NM})</span>
+              </div>
+              <span style="color: var(--wood-primary); font-weight: 600; font-size: 0.85rem;">선택 ›</span>
+            </div>
+          `).join('');
+        } else {
+          resultsBox.innerHTML = `<div class="empty-msg" style="padding: 8px;">검색 결과가 없습니다. 지역이나 학교명을 확인해주세요.</div>`;
+        }
+      } catch (err) {
+        resultsBox.innerHTML = `<div class="empty-msg" style="padding: 8px;">검색 중 오류가 발생했습니다. 인증키를 확인해주세요.</div>`;
+      }
+    }
+
+    // 2. 검색 목록에서 학교 클릭 시 선택 처리
+    function selectSchool(eduCode, schoolCode, schoolName, schoolKind) {
+      selectedSchool = { eduCode, schoolCode, schoolName, schoolKind };
+      document.getElementById('search-results').style.display = "none";
+      updateSchoolUI();
+      saveAndLoad();
+    }
+
+    function updateSchoolUI() {
+      document.getElementById('school-kind').innerText = selectedSchool.schoolKind || "학교";
+      document.getElementById('current-school-name').innerText = selectedSchool.schoolName;
+    }
+
+    function applyClassAndLoad() {
+      if (!selectedSchool.schoolCode) {
+        alert("먼저 위에서 학교를 검색해서 선택해주세요!");
+        return;
+      }
+      saveAndLoad();
+    }
+
+    // 브라우저에 설정 저장 후 급식/시간표 호출
+    function saveAndLoad() {
+      const grade = document.getElementById('grade-input').value;
+      const classNm = document.getElementById('class-input').value;
+
+      localStorage.setItem('upschool_config', JSON.stringify({
+        ...selectedSchool,
+        grade,
+        classNm
+      }));
+
+      fetchMeal();
+      fetchTimetable(grade, classNm);
+    }
+
+    // 3. 급식 조회
+    async function fetchMeal() {
+      const { eduCode, schoolCode } = selectedSchool;
+      const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=${API_KEY}&Type=json&ATPT_OFCDC_SC_CODE=${eduCode}&SD_SCHUL_CODE=${schoolCode}&MLSV_YMD=${YMD}`;
+      const mealEl = document.getElementById('meal-list');
+      mealEl.innerHTML = `<li class="empty-msg">급식을 불러오는 중...</li>`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.mealServiceDietInfo) {
+          const rawMenu = data.mealServiceDietInfo[1].row[0].DDISH_NM;
+          const cleanMenu = rawMenu.replace(/\([0-9.]+\)/g, '').split('<br/>');
+          mealEl.innerHTML = cleanMenu.map(item => `<li>${item.trim()}</li>`).join('');
+        } else {
+          mealEl.innerHTML = `<li class="empty-msg">오늘은 급식이 제공되지 않는 날입니다.</li>`;
+        }
+      } catch (err) {
+        mealEl.innerHTML = `<li class="empty-msg">급식 정보를 불러오지 못했습니다.</li>`;
+      }
+    }
+
+    // 4. 학교급(초/중/고)에 맞춘 시간표 자동 조회
+    async function fetchTimetable(grade, classNm) {
+      const { eduCode, schoolCode, schoolKind } = selectedSchool;
+      const timeEl = document.getElementById('timetable-list');
+      timeEl.innerHTML = `<li class="empty-msg">시간표를 불러오는 중...</li>`;
+
+      // 학교 종류에 따라 나이스 API 엔드포인트 자동 선택
+      let endpoint = "misTimetable"; // 기본: 중학교
+      if (schoolKind.includes("초등")) endpoint = "elsTimetable";
+      else if (schoolKind.includes("고등")) endpoint = "hisTimetable";
+
+      const url = `https://open.neis.go.kr/hub/${endpoint}?KEY=${API_KEY}&Type=json&ATPT_OFCDC_SC_CODE=${eduCode}&SD_SCHUL_CODE=${schoolCode}&ALL_TI_YMD=${YMD}&GRADE=${grade}&CLASS_NM=${classNm}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data[endpoint]) {
+          const rows = data[endpoint][1].row;
+          timeEl.innerHTML = rows.map(r => `<li><span class="period-num">${r.PERIO}교시</span> ${r.ITRT_CNTNT}</li>`).join('');
+        } else {
+          timeEl.innerHTML = `<li class="empty-msg">등록된 시간표가 없습니다.</li>`;
+        }
+      } catch (err) {
+        timeEl.innerHTML = `<li class="empty-msg">시간표를 불러오지 못했습니다.</li>`;
+      }
+    }
+
+    // 페이지 접속 시 이전에 저장한 학교 정보가 있으면 자동 불러오기
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('upschool_config');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.schoolCode) {
+          selectedSchool = {
+            eduCode: parsed.eduCode,
+            schoolCode: parsed.schoolCode,
+            schoolName: parsed.schoolName,
+            schoolKind: parsed.schoolKind
+          };
+          document.getElementById('region-select').value = parsed.eduCode;
+          document.getElementById('grade-input').value = parsed.grade || 2;
+          document.getElementById('class-input').value = parsed.classNm || 1;
+          updateSchoolUI();
+          fetchMeal();
+          fetchTimetable(parsed.grade || 2, parsed.classNm || 1);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
