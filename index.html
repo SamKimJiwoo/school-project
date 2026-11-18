@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <meta name="theme-color" content="#F4F6F9">
   <title>업스쿨 (UPSCHOOL)</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
@@ -702,7 +703,6 @@
     let isBgmPlaying = false;
     let bgmTimer = null;
 
-    // 따뜻하고 차분한 4마디 재즈/로파이 코드 진행 (Fmaj7 - Em7 - Dm7 - Cmaj7)
     const calmChords = [
       [174.61, 220.00, 261.63, 329.63], // Fmaj7
       [164.81, 196.00, 246.94, 293.66], // Em7
@@ -720,15 +720,12 @@
         const gain = audioCtx.createGain();
         const filter = audioCtx.createBiquadFilter();
 
-        // 부드러운 사인파 + 삼각파 조합 느낌의 사인 오실레이터
         osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
         osc.frequency.setValueAtTime(freq, now);
 
-        // 따뜻한 로우패스 필터로 고음 날카로움 제거
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(650, now);
 
-        // 아주 은은한 볼륨으로 서서히 커졌다가 사라지는 엔벨로프
         gain.gain.setValueAtTime(0.0001, now);
         gain.gain.exponentialRampToValueAtTime(0.022, now + 1.2);
         gain.gain.exponentialRampToValueAtTime(0.0001, now + 4.2);
@@ -737,7 +734,7 @@
         filter.connect(gain);
         gain.connect(audioCtx.destination);
 
-        osc.start(now + idx * 0.08); // 살짝 아르페지오 느낌으로 부드럽게 진입
+        osc.start(now + idx * 0.08);
         osc.stop(now + 4.4);
       });
     }
